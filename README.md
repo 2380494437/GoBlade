@@ -46,6 +46,7 @@ GoBlade/
 
 # 克隆项目
 git clone https://github.com/2380494437/GoBlade.git
+
 cd GoBlade
 
 # 初始化依赖
