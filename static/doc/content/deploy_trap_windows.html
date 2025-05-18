@@ -1,0 +1,72 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>Windows 部署：常见坑合集</h2></div>
+    <div class="layui-card-body">
+
+        <blockquote class="layui-elem-quote">
+            以下是 GoBlade 在 Windows 下运行、部署中初学者常见问题及对应解决方法。
+        </blockquote>
+
+        <fieldset class="layui-elem-field">
+            <legend>❌ 1️⃣ 控制台启动后被关闭</legend>
+            <div class="layui-field-box">
+                <p><strong>原因：</strong> 双击运行程序会自动关闭窗口</p>
+                <p><strong>建议：</strong> 使用命令行运行程序：</p>
+                <pre>
+cmd 或 PowerShell：
+go run main.go
+goblade.exe
+                </pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🌐 2️⃣ 防火墙拦截端口</legend>
+            <div class="layui-field-box">
+                <p><strong>现象：</strong> 浏览器无法访问 http://localhost:8080</p>
+                <p><strong>解决：</strong></p>
+                <pre>
+控制面板 → 系统和安全 → Windows 防火墙 →
+高级设置 → 入站规则 → 新建规则 →
+选择端口 → 输入 8080 → 允许连接
+                </pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>📁 3️⃣ 路径分隔符错误</legend>
+            <div class="layui-field-box">
+                <p><strong>配置中路径建议使用 / 而不是 \\</strong></p>
+                <p><strong>错误：</strong> <code>.\config\\file</code> ❌</p>
+                <p><strong>正确：</strong> <code>./config/file</code> ✅</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🧩 4️⃣ config.yaml 修改不生效</legend>
+            <div class="layui-field-box">
+                <p><strong>可能原因：</strong></p>
+                <ul class="layui-text">
+                    <li>配置文件编码为 UTF-16 而非 UTF-8</li>
+                    <li>未保存成功（被系统锁定）</li>
+                </ul>
+                <p><strong>建议：</strong> 使用 VSCode 或 Notepad++ 编辑保存为 UTF-8</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🔍 5️⃣ 没有安装 Go 或环境变量未配置</legend>
+            <div class="layui-field-box">
+                <p><strong>症状：</strong> 执行 <code>go run</code> 报错</p>
+                <p><strong>解决：</strong></p>
+                <ul class="layui-text">
+                    <li>确保已安装 Go 并配置 PATH 环境变量</li>
+                    <li>在命令行中执行 <code>go version</code> 验证</li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <blockquote class="layui-elem-quote">
+            ✅ Windows 不适合生产部署，建议部署到 Linux 服务器，并使用反向代理 + 守护进程管理。
+        </blockquote>
+    </div>
+</div>

@@ -1,0 +1,112 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>GoBlade 开发文档</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .layui-side { width: 200px; }
+        .layui-body { padding: 20px; }
+        .doc-content {
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: Consolas, monospace;
+        }
+    </style>
+</head>
+<body class="layui-layout-body">
+
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">GoBlade 文档</div>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><a href="#">主页</a></li>
+            <li class="layui-nav-item"><a href="#">帮助</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-shrink="all" lay-filter="menu">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a href="javascript:;">文档结构</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" onclick="loadPage('intro.html')">框架介绍</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('install.html')">安装配置</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('routing.html')">路由系统</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('blade.html')">Blade 模板</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('structure.html')">框架目录结构</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('config.html')">配置文件说明</a></dd>
+
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">开始开发</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" onclick="loadPage('controller.html')">可以修改的文件</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('create_api.html')">创建一个接口</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('json_return.html')">返回JSON格式给前端</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('html_return.html')">动态渲染一个HTML页面</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('db_use.html')">数据库调用</a></dd>
+                        
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">调试编译部署</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" onclick="loadPage('debug.html')">调试代码</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('build.html')">编译代码</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('daemon.html')">后台运行</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('baota.html')">宝塔面板部署Go项目</a></dd>                        
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">常见问题</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" onclick="loadPage('start_error.html')">框架启动报错</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('config_not_reload.html')">修改yaml配置不生效</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('port_issue.html')">监听 80 端口失败</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('deploy_trap_linux.html')">最容易踩的坑(linux篇)</a></dd>
+                        <dd><a href="javascript:;" onclick="loadPage('deploy_trap_windows.html')">最容易踩的坑(Win篇)</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <div class="doc-content" id="docContent">
+            <h2>欢迎使用 GoBlade 开发文档</h2>
+            <p>请选择左侧菜单进行浏览。</p>
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        © 2025 GoBlade 文档系统
+    </div>
+</div>
+
+<script src="../layui/layui.js"></script>
+<script>
+layui.use(['element'], function(){
+    var element = layui.element;
+});
+
+// 动态加载子页面内容
+function loadPage(page) {
+    fetch(`doc/content/${page}`)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('docContent').innerHTML = html;
+        })
+        .catch(() => {
+            document.getElementById('docContent').innerHTML = "<p>内容加载失败，请检查路径或网络</p>";
+        });
+}
+</script>
+
+</body>
+</html>

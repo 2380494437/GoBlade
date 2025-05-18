@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>GoBlade - 轻量级 Go 后端模板</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <style>
+        body {
+            padding: 60px;
+            font-family: "Helvetica Neue", sans-serif;
+            text-align: center;
+        }
+        .title {
+            font-size: 38px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #888;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+        .info-list {
+            display: inline-block;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+        .info-list li {
+            margin: 8px 0;
+        }
+        h3 {
+            margin-top: 50px;
+        }
+        .layui-table {
+            max-width: 900px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="title">GoBlade</div>
+    <div class="subtitle">轻量、清晰、可拓展的 Go 后端模板框架</div>
+
+    <ul class="info-list layui-text">
+        <li><strong>👤 作者：</strong> 菜鸟八哥</li>
+        <li><strong>🛠 技术栈：</strong> Go + Gin + MySQL + Layui</li>
+        <li><strong>🎯 项目定位：</strong> 简洁、高性能，适合中小型接口服务</li>
+        <li><strong>👥 适用人群：</strong> Go 初学者、ThinkPHP 转 Go 用户、后端开发者</li>
+        <li><strong>📂 支持功能：</strong> 多版本路由、自动建表、安装界面、错误页、静态资源托管</li>
+    </ul>
+
+    <div style="margin-top: 30px;">
+        <button class="layui-btn layui-btn-normal" onclick="window.location.href='/doc.html'">📘 查看开发文档</button>
+    </div>
+
+    <h3>📈 项目优势</h3>
+    <ul class="layui-text" style="max-width: 600px; margin: 0 auto; text-align: left;">
+        <li><strong>轻量无依赖：</strong> 除 Gin 外几乎无三方依赖，适合快速部署</li>
+        <li><strong>结构清晰：</strong> 分层合理，控制器、路由、配置模块分离</li>
+        <li><strong>多版本支持：</strong> 接口支持 /api/v1, /api/v2，方便迭代升级</li>
+        <li><strong>自动建表：</strong> 无需写 SQL，首次安装自动创建表结构并补全字段</li>
+        <li><strong>易于扩展：</strong> 可无缝接入 GORM、JWT、权限系统等中间件</li>
+    </ul>
+
+    <h3>✅ 推荐使用场景</h3>
+    <ul class="layui-text" style="max-width: 600px; margin: 0 auto; text-align: left;">
+        <li>🎯 <strong>Go 初学者练习</strong>：快速理解一个后端项目的完整结构</li>
+        <li>💡 <strong>中小型项目起步</strong>：接口清晰，逻辑简洁，快速启动业务开发</li>
+        <li>🚀 <strong>后台管理/系统中台</strong>：配合前端即可搭建内部业务系统</li>
+        <li>📦 <strong>个人/团队脚手架</strong>：二次封装可作为你团队专属 Go 模板</li>
+    </ul>
+
+    <h3>📊 同类框架对比</h3>
+    <table class="layui-table">
+        <thead>
+            <tr>
+                <th>对比项</th>
+                <th>GoBlade（Go）</th>
+                <th>ThinkPHP（PHP）</th>
+                <th>Spring Boot（Java）</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>语言运行模式</td>
+                <td>编译执行，常驻内存</td>
+                <td>解释执行，每次请求重启</td>
+                <td>编译执行，JVM 长驻</td>
+            </tr>
+            <tr>
+                <td>并发性能</td>
+                <td>⭐⭐⭐⭐⭐（极高）</td>
+                <td>⭐⭐（依赖 FPM）</td>
+                <td>⭐⭐⭐（适中）</td>
+            </tr>
+            <tr>
+                <td>部署复杂度</td>
+                <td>⭐⭐⭐（需构建+守护）</td>
+                <td>⭐⭐（Nginx + PHP 即可）</td>
+                <td>⭐⭐⭐⭐（需 JDK、打包、服务）</td>
+            </tr>
+            <tr>
+                <td>框架体积</td>
+                <td>小（单文件可运行）</td>
+                <td>中</td>
+                <td>大（Jar包 + 依赖）</td>
+            </tr>
+            <tr>
+                <td>学习曲线</td>
+                <td>⭐⭐⭐（语法简单）</td>
+                <td>⭐⭐（门槛低）</td>
+                <td>⭐⭐⭐⭐（Java 背景要求）</td>
+            </tr>
+            <tr>
+                <td>扩展生态</td>
+                <td>Gin/GORM/logrus 等成熟生态</td>
+                <td>大量类库 + 开源后台模板</td>
+                <td>成熟中间件 + 微服务支持强</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr style="margin-top: 60px;">
+    <p style="color: #aaa;">GoBlade 项目首页 | 版本 1.1</p>
+
+</body>
+</html>

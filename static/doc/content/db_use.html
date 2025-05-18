@@ -1,0 +1,98 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>调用数据库连接池（MySQL）</h2></div>
+    <div class="layui-card-body">
+
+        <blockquote class="layui-elem-quote">
+            GoBlade 使用全局数据库连接池 <code>config.DB</code>，你可以在任意控制器中通过配置获取数据库句柄并执行 SQL 操作。
+        </blockquote>
+
+        <fieldset class="layui-elem-field">
+            <legend>1️⃣ 引入配置包</legend>
+            <div class="layui-field-box">
+                <p>在你的控制器文件中：</p>
+                <pre>
+import (
+    "GoBlade/config"
+    "GoBlade/utils"
+)
+                </pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>2️⃣ 获取配置与数据库句柄</legend>
+            <div class="layui-field-box">
+                <pre>
+// 加锁读取配置，确保热重载时线程安全
+config.ConfigLock.RLock()
+cfg := config.Config
+config.ConfigLock.RUnlock()
+
+// 全局数据库连接池
+db := config.DB
+                </pre>
+
+                <p><code>cfg</code> 用于读取配置文件中的参数（如表名前缀）</p>
+                <p><code>db</code> 是 *sql.DB 类型的连接池对象</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>3️⃣ 安全判断是否启用数据库</legend>
+            <div class="layui-field-box">
+                <p>推荐在调用前添加判断，避免运行时崩溃：</p>
+                <pre>
+if !cfg.MySQLEnabled || db == nil {
+    utils.JSON(c, 500, "数据库未启用或连接失败", nil)
+    return
+}
+                </pre>
+                <p>说明：</p>
+                <ul class="layui-text">
+                    <li>确保配置中启用了数据库：<code>mysql_enabled: true</code></li>
+                    <li>避免连接失败时继续执行导致 panic</li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>4️⃣ 示例：动态拼接表名并查询</legend>
+            <div class="layui-field-box">
+                <pre>
+tableName := cfg.TablePrefix + "user"
+query := "SELECT id, nickname FROM " + tableName + " WHERE id = ?"
+
+row := db.QueryRow(query, 1)
+
+var id int
+var nickname string
+if err := row.Scan(&id, &nickname); err != nil {
+    utils.JSON(c, 500, "查询失败："+err.Error(), nil)
+    return
+}
+
+utils.JSON(c, 200, "查询成功", gin.H{
+    "id": id,
+    "nickname": nickname,
+})
+                </pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>📦 小提示</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li>数据库连接池由框架自动初始化，默认在 <code>/config/db.go</code></li>
+                    <li>配置文件中通过 <code>mysql_enabled</code> 控制是否启用数据库</li>
+                    <li>配置热重载后 <code>cfg</code> 实时生效，无需重启</li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <blockquote class="layui-elem-quote">
+            ✅ 推荐所有数据库操作前都加上判断是否启用，并封装错误处理返回，避免服务崩溃。
+        </blockquote>
+
+    </div>
+</div>

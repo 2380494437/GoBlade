@@ -1,0 +1,62 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>后台运行 GoBlade（Linux）</h2></div>
+    <div class="layui-card-body">
+
+        <fieldset class="layui-elem-field">
+            <legend>📌 nohup（简单快速）</legend>
+            <div class="layui-field-box">
+                <pre>
+nohup ./goblade > run.log 2>&1 &
+                </pre>
+                <p>说明：</p>
+                <ul class="layui-text">
+                    <li><code>nohup</code>：忽略 hangup 信号</li>
+                    <li><code>&</code>：后台执行</li>
+                    <li><code>run.log</code>：日志输出位置</li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🛠 systemd 推荐配置</legend>
+            <div class="layui-field-box">
+                <p><strong>/etc/systemd/system/goblade.service</strong>：</p>
+                <pre>
+[Unit]
+Description=GoBlade Web Framework
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/www/goblade
+ExecStart=/home/www/goblade/goblade
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+                </pre>
+                <p>启用命令：</p>
+                <pre>
+sudo systemctl daemon-reexec
+sudo systemctl enable goblade
+sudo systemctl start goblade
+                </pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>📋 常见问题</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li><strong>程序启动后中断？</strong> 使用 & 或 systemd 启动</li>
+                    <li><strong>systemctl 启动失败？</strong> 检查路径与执行权限</li>
+                    <li><strong>修改后没生效？</strong> 执行 <code>systemctl daemon-reload</code></li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <blockquote class="layui-elem-quote">
+            ✅ 正式部署推荐使用 systemd 或 Supervisor 做守护运行，确保系统自动重启。
+        </blockquote>
+    </div>
+</div>

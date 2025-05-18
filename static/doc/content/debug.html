@@ -1,0 +1,39 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>调试代码（本地开发）</h2></div>
+    <div class="layui-card-body">
+
+        <fieldset class="layui-elem-field">
+            <legend>🧪 Windows 命令行调试</legend>
+            <div class="layui-field-box">
+                <pre>
+cd 项目目录
+go run main.go
+                </pre>
+                <p>调试信息将输出在控制台。</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🐧 Linux 命令行调试</legend>
+            <div class="layui-field-box">
+                <pre>
+cd /home/www/goblade
+go run main.go
+                </pre>
+                <p>确保已设置好 Go 环境变量，并处于项目根目录。</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>📌 常见问题</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li>调试中修改 config.yaml 不生效？热重载依赖保存成功。</li>
+                    <li>go run 提示缺失包？请先执行 <code>go mod tidy</code></li>
+                    <li>控制台崩溃？检查数据库配置或是否 panic</li>
+                </ul>
+            </div>
+        </fieldset>
+
+    </div>
+</div>

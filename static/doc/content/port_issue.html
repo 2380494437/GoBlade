@@ -1,0 +1,85 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>常见问题：监听 80 端口失败</h2></div>
+    <div class="layui-card-body">
+
+        <blockquote class="layui-elem-quote">
+            在 Linux 或 Windows 上运行 Go 项目时，如果尝试监听 <code>80</code> 端口，很可能会遇到“权限不足”或“端口被占用”等问题。
+        </blockquote>
+
+        <fieldset class="layui-elem-field">
+            <legend>❌ 问题一：权限不足</legend>
+            <div class="layui-field-box">
+                <p><strong>Linux 报错示例：</strong></p>
+                <pre>listen tcp :80: bind: permission denied</pre>
+                <p><strong>原因：</strong> Linux 下监听 1~1024 端口必须使用 root 用户。</p>
+                <p><strong>解决方案：</strong></p>
+                <ul class="layui-text">
+                    <li>✅ 推荐方案：监听 8080/8090 等高位端口，不需要 root 权限</li>
+                    <li>如果必须使用 80 端口：使用 <code>sudo</code> 启动程序</li>
+                </ul>
+                <pre>sudo ./goblade</pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>❌ 问题二：端口已被占用</legend>
+            <div class="layui-field-box">
+                <p><strong>Windows 报错示例：</strong></p>
+                <pre>listen tcp :80: bind: An attempt was made to access a socket in a way forbidden by its access permissions.</pre>
+                <p><strong>原因：</strong> 80 端口被系统或其他软件（如 IIS、Apache）占用。</p>
+                <p><strong>解决方案：</strong></p>
+                <ul class="layui-text">
+                    <li>使用 <code>netstat</code> 或 <code>lsof</code> 查看占用情况</li>
+                    <li>更换为 8080/8888 等端口，避免冲突</li>
+                </ul>
+                <pre>
+# Windows
+netstat -ano | findstr :80
+
+# Linux
+lsof -i:80
+                </pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>✅ 推荐做法：监听高位端口 + 反向代理</legend>
+            <div class="layui-field-box">
+                <p>建议框架监听 <code>8080</code>、<code>8090</code> 等端口，再用 Nginx 做反向代理转发至 80/443。</p>
+                <pre># Nginx 示例配置
+
+server {
+    listen 80;
+    server_name goblade.example.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+                </pre>
+                <p>优势：</p>
+                <ul class="layui-text">
+                    <li>无需 root 权限运行 Go 应用</li>
+                    <li>可启用 HTTPS（Nginx 配置 SSL）</li>
+                    <li>支持域名绑定、多服务共存</li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>📌 配置监听端口</legend>
+            <div class="layui-field-box">
+                <p>修改 <code>config.yaml</code> 中的端口字段：</p>
+                <pre>port: 8080</pre>
+                <p>如更改后未生效，需重启服务。</p>
+            </div>
+        </fieldset>
+
+        <blockquote class="layui-elem-quote">
+            ✅ 总结：Go 服务推荐监听高位端口 + Nginx 反向代理实现生产部署，安全、高效、通用。
+        </blockquote>
+
+    </div>
+</div>

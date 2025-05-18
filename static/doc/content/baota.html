@@ -1,0 +1,80 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>使用宝塔面板部署 GoBlade 项目</h2></div>
+    <div class="layui-card-body">
+
+        <blockquote class="layui-elem-quote">
+            宝塔面板是一款可视化的服务器运维工具，适合新手部署网站或服务，支持 Nginx、MySQL、防火墙等集成管理。
+        </blockquote>
+
+        <fieldset class="layui-elem-field">
+            <legend>🧱 第一步：准备工作</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li>已安装好宝塔面板（CentOS / Ubuntu / Debian）</li>
+                    <li>安装 Nginx、MySQL（如需）、PHP（可选）</li>
+                    <li>上传并解压 GoBlade 项目到服务器目录，如：<code>/www/wwwroot/goblade</code></li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🔧 第二步：编译 Go 项目</legend>
+            <div class="layui-field-box">
+                <p>进入项目目录，执行编译：</p>
+                <pre>
+cd /www/wwwroot/goblade
+go build -o goblade main.go
+chmod +x goblade
+                </pre>
+                <p>编译后会生成一个可执行文件：<code>goblade</code></p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🚀 第三步：运行 Goblade 程序</legend>
+            <div class="layui-field-box">
+                <p>后台运行程序（防止 SSH 断开终止）：</p>
+                <pre>
+nohup ./goblade > run.log 2>&1 &
+                </pre>
+                <p>你也可以使用宝塔的“计划任务”功能定时重启或运行脚本。</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🌐 第四步：配置 Nginx 反向代理</legend>
+            <div class="layui-field-box">
+                <p>在宝塔中添加一个“纯静态”站点，绑定域名或 IP。</p>
+                <p>进入该站点 → 设置 → 配置文件，添加反向代理：</p>
+                <pre>
+location / {
+    proxy_pass http://127.0.0.1:8080;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+                </pre>
+                <ul class="layui-text">
+                    <li>确认 goblade 正在监听 <code>8080</code> 端口（或 config.yaml 中自定义）</li>
+                    <li>如需启用 HTTPS，请使用宝塔“一键 SSL”功能</li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>📌 常见问题</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li><strong>无法访问？</strong> 检查防火墙是否开放端口</li>
+                    <li><strong>返回 502？</strong> 检查 goblade 是否运行、端口是否匹配</li>
+                    <li><strong>权限问题？</strong> 确保 goblade 可执行权限 <code>chmod +x goblade</code></li>
+                    <li><strong>修改 config.yaml 不生效？</strong> 配置热重载依赖保存成功</li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <blockquote class="layui-elem-quote">
+            ✅ 推荐在生产环境中使用 Nginx + Goblade 后端组合，前端由宝塔配置域名与证书，后端专注逻辑处理。
+        </blockquote>
+
+    </div>
+</div>

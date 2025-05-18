@@ -1,0 +1,120 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>返回 HTML 页面（动态渲染）</h2></div>
+    <div class="layui-card-body">
+
+        <blockquote class="layui-elem-quote">
+            本节适用于前后端融合项目，展示如何使用 <code>html/template</code> 渲染 HTML 给前端。
+        </blockquote>
+
+        <fieldset class="layui-elem-field">
+            <legend>📁 模板文件放置目录</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li>所有 HTML 模板应存放于 <code>/templates/</code> 目录下</li>
+                    <li>该目录由 <code>config.yaml</code> 中 <code>error_dir</code> 控制</li>
+                    <li>模板文件建议使用 <code>.html</code> 后缀</li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>✅ 示例：返回 hello.html 页面</legend>
+            <div class="layui-field-box">
+                <p>模板文件 <code>templates/hello.html</code>：</p>
+                <pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Hello 页面&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;你好，{{ .Name }}！&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+                </pre>
+
+                <p>控制器代码：</p>
+                <pre>
+// controllers/v1/html.go
+
+package v1
+
+import (
+    "github.com/gin-gonic/gin"
+    "html/template"
+)
+
+func HelloHTML(c *gin.Context) {
+    tmpl := template.Must(template.ParseFiles("templates/hello.html"))
+    _ = tmpl.Execute(c.Writer, gin.H{
+        "Name": "GoBlade 用户",
+    })
+}
+                </pre>
+
+                <p>路由绑定：</p>
+                <pre>
+r.GET("/hello-html", controllers.HelloHTML)
+                </pre>
+
+                <p>访问：</p>
+                <pre>http://localhost:8080/api/v1/hello-html</pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🧩 模板数据传参方式</legend>
+            <div class="layui-field-box">
+                <p>你可以传任意变量至模板：</p>
+                <pre>
+tmpl.Execute(c.Writer, gin.H{
+    "title": "系统设置",
+    "items": []string{"配置项A", "配置项B"},
+})
+                </pre>
+                <p>模板中使用：</p>
+                <pre>
+&lt;h1&gt;{{ .title }}&lt;/h1&gt;
+&lt;ul&gt;
+    {{ range .items }}
+        &lt;li&gt;{{ . }}&lt;/li&gt;
+    {{ end }}
+&lt;/ul&gt;
+                </pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>📌 推荐封装方式（可选）</legend>
+            <div class="layui-field-box">
+                <p>你可封装一个通用函数供页面渲染调用：</p>
+                <pre>
+// utils/view.go
+
+func Render(c *gin.Context, tmpl string, data any) {
+    t := template.Must(template.ParseFiles("templates/" + tmpl))
+    _ = t.Execute(c.Writer, data)
+}
+                </pre>
+                <p>控制器中调用：</p>
+                <pre>
+utils.Render(c, "hello.html", gin.H{"Name": "张三"})
+                </pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>❗ 与前后端分离项目的区别</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li>若项目前端完全由 Vue/React 等构建，后端只需返回 JSON 数据</li>
+                    <li>只有“融合项目”或“嵌入页面系统”才需要返回 HTML</li>
+                    <li>本功能常用于：安装页、后台管理页、静态错误页等</li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <blockquote class="layui-elem-quote">
+            ✅ 小结：若你使用 GoBlade 构建中台系统、安装页、后台管理，建议使用 HTML 模板渲染。
+        </blockquote>
+
+    </div>
+</div>

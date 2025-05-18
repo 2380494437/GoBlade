@@ -1,0 +1,74 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>可以修改的文件和开发入口说明</h2></div>
+    <div class="layui-card-body">
+
+        <blockquote class="layui-elem-quote">
+            本页用于帮助开发者快速识别哪些目录和文件可以修改，哪些属于框架核心不建议动。
+        </blockquote>
+
+        <fieldset class="layui-elem-field">
+            <legend>✅ 推荐修改区域（你的业务代码）</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li><code>/controllers/</code>：你的接口逻辑写在这里，按版本划分</li>
+                    <li><code>/routes/</code>：注册你的路由路径，如 /api/v1/hello</li>
+                    <li><code>/utils/</code>：可以扩展返回结构、JSON工具等，把你开发的一些通用工具模块丢到这个目录，自己用到的时候按需加载</li>
+                    <li><code>/templates/</code>：页面渲染模板（如 HTML 错误页,一般不需要修改，除非你想要自己DIY，为什么放到这里而不放到/static/？因为/static/里是资源是可以直接被公网访问到的，而这里的不能，确保原始模板代码的安全）</li>
+                    <li><code>/config.yaml</code>：配置端口、模式、并发限制、数据库等</li>
+                    <li><code>/static/</code>：静态文件目录（也就是你的项目前端目录,所有的html，js，css，图片等整个前端代码都放到这个目录,丢进去就可以直接访问到）</li>
+                    <li><code>/middlewares/auth.go</code>：权限拦截器（可按需改,比如你的接口需要用到用户鉴权，则在这里统一开发）</li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>⛔ 框架核心区域（不建议改动）</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li><code>/middlewares/core/</code>：内置中间件，如 Gzip、限流、CORS 等</li>
+                    <li><code>/config/</code>：配置加载器、数据库连接（框架自动调用）</li>
+                    <li><code>/main.go</code>：仅用于启动，不推荐放业务代码</li>
+                </ul>
+                <p>⚠️ 修改这些文件可能影响框架稳定性，建议仅在非常熟悉后再修改。</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🧩 控制器文件结构示例</legend>
+            <div class="layui-field-box">
+                <pre>
+// controllers/v1/hello.go
+
+package v1
+
+import (
+    "github.com/gin-gonic/gin"
+    "GoBlade/utils"
+)
+
+func HelloHandler(c *gin.Context) {
+    utils.JSON(c, 200, "你好，GoBlade！", gin.H{
+        "path": c.Request.URL.Path,
+    })
+}
+                </pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>📂 控制器文件命名建议</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li>按模块拆分，例如：<code>user.go</code>、<code>article.go</code></li>
+                    <li>每个版本放在对应目录下，如：<code>controllers/v1/</code></li>
+                    <li>函数以 <code>xxxHandler</code> 结尾，如：<code>LoginHandler</code></li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <blockquote class="layui-elem-quote">
+            下一步：请前往 <strong>创建一个接口</strong> 页面，学习如何把控制器函数挂到路由上。
+        </blockquote>
+
+    </div>
+</div>

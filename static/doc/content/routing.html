@@ -1,0 +1,99 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>路由系统说明</h2></div>
+    <div class="layui-card-body">
+
+        <blockquote class="layui-elem-quote">
+            GoBlade 使用 Gin 框架的路由机制，支持 RESTful 风格和多版本管理，所有路由集中在 <code>routes/</code> 目录中管理。
+        </blockquote>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>1️⃣ 路由注册入口：router.go</legend>
+        </fieldset>
+        <p><code>routes/router.go</code> 是项目的主路由注册文件：</p>
+        <pre>
+func RegisterRoutes(r *gin.Engine) {
+    apiV1 := r.Group("/api/v1")
+    v1.Register(apiV1)
+
+    apiV2 := r.Group("/api/v2")
+    v2.Register(apiV2)
+}
+        </pre>
+        <p>通过 <code>Group</code> 实现多版本接口划分，支持 <code>/api/v1</code>、<code>/api/v2</code> 等多版本共存。</p>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>2️⃣ 路由模块划分：v1.go</legend>
+        </fieldset>
+        <p>每个版本单独维护路由，例如：</p>
+        <pre>
+func Register(r *gin.RouterGroup) {
+    r.POST("/install", controllers.InstallHandler) // 安装接口
+    r.GET("/test-panic", func(c *gin.Context) {
+        panic("测试崩溃")
+    })
+
+    user := r.Group("/user")
+    user.Use(middlewares.AuthMiddleware()) // 权限中间件
+    {
+        user.POST("/create", func(c *gin.Context) {
+            // 用户创建逻辑
+        })
+        user.POST("/list", func(c *gin.Context) {
+            // 用户查询逻辑
+        })
+    }
+}
+        </pre>
+        <p>可以通过 <code>r.Group()</code> 嵌套子路径，实现模块分组和中间件绑定。</p>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>3️⃣ 控制器绑定示例：InstallHandler</legend>
+        </fieldset>
+        <p>InstallHandler 绑定到 <code>/api/v1/install</code>，用于自动建表：</p>
+        <pre>
+r.POST("/install", controllers.InstallHandler)
+        </pre>
+        <p>控制器处理逻辑位于 <code>controllers/v1/install.go</code>，支持自动建表和字段补全。</p>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>4️⃣ 支持的请求方法</legend>
+        </fieldset>
+        <ul class="layui-text">
+            <li><code>r.GET("/path", handler)</code>：处理 GET 请求</li>
+            <li><code>r.POST("/path", handler)</code>：处理 POST 请求</li>
+            <li><code>r.PUT("/path", handler)</code>：处理 PUT 请求</li>
+            <li><code>r.DELETE("/path", handler)</code>：处理 DELETE 请求</li>
+        </ul>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>5️⃣ 中间件使用方式</legend>
+        </fieldset>
+        <p>在路由组中使用权限验证等中间件：</p>
+        <pre>
+user := r.Group("/user")
+user.Use(middlewares.AuthMiddleware())
+        </pre>
+        <p>所有 <code>/api/v1/user/xxx</code> 路由将自动使用该中间件。</p>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>6️⃣ 路由扩展建议</legend>
+        </fieldset>
+        <ul class="layui-text">
+            <li>每个版本建议独立一个 <code>v1.go</code>/<code>v2.go</code></li>
+            <li>路由对应的控制器建议使用模块/功能分类，例如 <code>controllers/user.go</code></li>
+            <li>中间件可全局注册或按需绑定到某个 <code>Group</code></li>
+        </ul>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>✅ 示例：添加一个新接口</legend>
+        </fieldset>
+        <pre>
+// 新增一个 GET 接口 /api/v1/hello
+r.GET("/hello", func(c *gin.Context) {
+    c.JSON(200, gin.H{"message": "Hello, World!"})
+})
+        </pre>
+
+        <p>保存后运行 <code>go run main.go</code> 即可测试。</p>
+    </div>
+</div>

@@ -1,0 +1,88 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>统一返回 JSON 数据</h2></div>
+    <div class="layui-card-body">
+
+        <blockquote class="layui-elem-quote">
+            所有接口建议通过 <code>utils.JSON()</code> 方法统一返回格式，便于前端解析与接口一致性管理。
+        </blockquote>
+
+        <fieldset class="layui-elem-field">
+            <legend>📦 返回函数定义</legend>
+            <div class="layui-field-box">
+                <pre>
+// utils/response.go
+
+func JSON(c *gin.Context, code int, message string, data interface{}) {
+    c.JSON(code, gin.H{
+        "code":    code,
+        "message": message,
+        "data":    data,
+    })
+}
+                </pre>
+                <p>说明：</p>
+                <ul class="layui-text">
+                    <li><code>code</code>：HTTP 状态码（200、400、500 等）</li>
+                    <li><code>message</code>：提示信息</li>
+                    <li><code>data</code>：返回的数据结构（map、struct、list 等）</li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>✅ 示例：返回用户信息</legend>
+            <div class="layui-field-box">
+                <pre>
+// controllers/v1/user.go
+
+func GetUser(c *gin.Context) {
+    user := map[string]interface{}{
+        "id":       1,
+        "username": "admin",
+        "role":     "super",
+    }
+    utils.JSON(c, 200, "用户信息获取成功", user)
+}
+                </pre>
+                <p>返回结果：</p>
+                <pre>{
+    "code": 200,
+    "message": "用户信息获取成功",
+    "data": {
+        "id": 1,
+        "username": "admin",
+        "role": "super"
+    }
+}</pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>⚠️ 错误返回示例</legend>
+            <div class="layui-field-box">
+                <pre>
+utils.JSON(c, 400, "参数错误", nil)
+utils.JSON(c, 500, "服务器异常，请稍后重试", nil)
+                </pre>
+                <p>前端可以统一判断 <code>code != 200</code> 来处理异常。</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🧩 配合响应中间件建议</legend>
+            <div class="layui-field-box">
+                <p>你可以在中间件中统一日志输出或追踪错误响应，例如：</p>
+                <pre>
+// middlewares/logger.go
+
+// 记录每次 utils.JSON 响应的数据或状态
+                </pre>
+            </div>
+        </fieldset>
+
+        <blockquote class="layui-elem-quote">
+            ✅ 推荐所有接口都使用 <code>utils.JSON()</code> 响应函数，保持一致性。
+        </blockquote>
+
+    </div>
+</div>

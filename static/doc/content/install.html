@@ -1,0 +1,165 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>安装与配置说明</h2></div>
+    <div class="layui-card-body">
+
+        <blockquote class="layui-elem-quote">本项目基于 Go + Gin，需先完成开发环境准备。</blockquote>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>1️⃣ 安装 Go 语言环境</legend>
+        </fieldset>
+        
+        <p><strong>官网地址：</strong> <a href="https://go.dev/dl" target="_blank">https://go.dev/dl</a></p>
+        
+        <table class="layui-table">
+            <thead>
+                <tr><th>平台</th><th>推荐命令</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Windows</td>
+                    <td>下载安装 MSI 安装包</td>
+                    <td>从 <a href="https://go.dev/dl" target="_blank">官网</a> 下载 `.msi` 安装包并执行安装，自动配置环境变量</td>
+                </tr>
+                <tr>
+                    <td>Linux</td>
+                    <td>
+                        <pre>wget https://go.dev/dl/go1.21.0.linux-amd64.tar.gz -O go.tar.gz
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf go.tar.gz
+echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+source ~/.bashrc</pre>
+                    </td>
+                    <td>一键下载并安装 Go 到 <code>/usr/local</code>，写入环境变量</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <p><strong>其他 Linux 安装方式：</strong></p>
+        
+        <ul class="layui-text">
+            <li>📦<strong>使用包管理器（适用于 Debian/Ubuntu）：</strong>
+                <pre>sudo apt update
+sudo apt install golang-go</pre>
+                <p>说明：安装较为便捷，但版本可能不是最新版</p>
+            </li>
+            <li>🧩<strong>手动安装方式：</strong>
+                <pre>wget https://go.dev/dl/go1.21.0.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.21.0.linux-amd64.tar.gz
+echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+source ~/.bashrc</pre>
+                <p>说明：自行下载解压并配置 PATH 环境变量</p>
+            </li>
+        </ul>
+        
+        <p><strong>验证是否安装成功：</strong></p>
+        <pre>go version</pre>
+        <p>输出示例：</p>
+        <pre>go version go1.21.0 linux/amd64</pre>
+        
+        
+        <p>本项目已经包含 <code>go.mod</code> 和 <code>go.sum</code> 文件，依赖包（如 Gin 和 yaml）已被声明。</p>
+        
+        <table class="layui-table">
+            <thead>
+                <tr><th>方式</th><th>操作命令</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>✅ 自动加载（推荐）</td>
+                    <td><code>go run main.go</code><br>或<br><code>go build</code></td>
+                    <td>Go 将自动识别依赖并下载</td>
+                </tr>
+                <tr>
+                    <td>🔧 手动下载依赖(参考下面手动配置教程)</td>
+                    <td><code>go mod tidy</code></td>
+                    <td>主动下载并清理未用依赖</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <p>你可以选择任意一种方式加载依赖。</p>
+        
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>2️⃣ 安装 Gin 框架</legend>
+        </fieldset>
+        <pre>go get -u github.com/gin-gonic/gin</pre>
+        <p>说明：从官方仓库拉取 Gin 框架，供后续项目使用。</p>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>3️⃣ 安装 YAML 配置库</legend>
+        </fieldset>
+        <pre>go get gopkg.in/yaml.v3</pre>
+        <p>说明：项目使用 <code>yaml.v3</code> 来解析配置文件 <code>config.yaml</code>。</p>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>4️⃣ 下载 GoBlade 项目</legend>
+        </fieldset>
+        <table class="layui-table">
+            <thead>
+                <tr><th>平台</th><th>命令</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Windows / Linux</td>
+                    <td><pre>git clone https://github.com/2380494437/goblade.git (暂未上传git)</pre></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>进入项目目录：</p>
+        <pre>cd goblade</pre>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>5️⃣ 初始化依赖</legend>
+        </fieldset>
+        <pre>go mod tidy</pre>
+        <p>说明：整理并拉取 go.mod 中声明的依赖包。</p>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>6️⃣ 启动项目</legend>
+        </fieldset>
+        <pre>go run main.go</pre>
+        <p>说明：启动 Web 服务，默认监听 <code>0.0.0.0:8080</code>，可通过浏览器访问 <code>http://localhost:8080</code>。</p>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>7️⃣ 调试运行（推荐使用 GoLand）</legend>
+        </fieldset>
+        <ul class="layui-text">
+            <li>使用 IDE 打开项目目录</li>
+            <li>配置 main.go 为启动项</li>
+            <li>添加调试断点，点击运行或调试按钮</li>
+        </ul>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>8️⃣ 编译发布</legend>
+        </fieldset>
+        <table class="layui-table">
+            <thead>
+                <tr><th>系统</th><th>命令</th><th>说明</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Windows</td>
+                    <td><pre>go build -o goblade.exe main.go</pre></td>
+                    <td>生成 Windows 可执行文件</td>
+                </tr>
+                <tr>
+                    <td>Linux</td>
+                    <td><pre>GOOS=linux GOARCH=amd64 go build -o goblade main.go</pre></td>
+                    <td>交叉编译为 Linux 可执行文件</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>执行文件说明：</p>
+        <ul class="layui-text">
+            <li><code>goblade.exe</code> / <code>goblade</code>：可部署运行的主程序</li>
+            <li>部署时只需保留 <code>static</code>、<code>templates</code>、<code>config.yaml</code> 等配置资源</li>
+        </ul>
+
+        <fieldset class="layui-elem-field layui-field-title">
+            <legend>✅ 完成！</legend>
+        </fieldset>
+        <p>你已完成安装和运行配置，可以继续开发自己的后端服务。</p>
+    </div>
+</div>

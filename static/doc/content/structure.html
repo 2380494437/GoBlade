@@ -1,0 +1,94 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>框架目录结构说明</h2></div>
+    <div class="layui-card-body">
+
+        <blockquote class="layui-elem-quote">
+            GoBlade 框架采用模块化设计，以下是项目完整结构与说明。
+        </blockquote>
+
+        <ul class="layui-tree layui-text" lay-filter="gostructure">
+            <li><span>/go/</span>
+                <ul>
+                    <li><span>main.go</span> - 启动入口，初始化配置、路由、注册中间件</li>
+                    <li><span>config/</span>
+                        <ul>
+                            <li><span>blacklist.txt</span> - IP黑名单文件</li>
+                            <li><span>project_config.go</span> - 项目静态配置结构定义</li>
+                            <li><span>loader.go</span> - 加载 config.yaml，支持热重载</li>
+                            <li><span>db.go</span> - 初始化全局数据库连接池 DB</li>
+                        </ul>
+                    </li>
+                    <li><span>controllers/</span>
+                        <ul>
+                            <li><span>v1/</span>
+                                <ul>
+                                    <li><span>install.go</span> - 安装逻辑，自动建表示例</li>
+                                </ul>
+                            </li>
+                            <li><span>v2/</span>
+                                <ul>
+                                    <li><span>install.go</span> - v2 安装逻辑（可扩展）</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><span>routes/</span>
+                        <ul>
+                            <li><span>router.go</span> - 路由注册入口，挂载 v1/v2 路由</li>
+                            <li><span>v1/v1.go</span> - v1 接口定义与注册</li>
+                            <li><span>v2/v2.go</span> - v2 接口定义与注册</li>
+                        </ul>
+                    </li>
+                    <li><span>middlewares/</span>
+                        <ul>
+                            <li><span>auth.go</span> - 自定义权限认证中间件</li>
+                            <li><span>core/</span>
+                                <ul>
+                                    <li><span>body_limet.go</span> - 上传大小限制中间件</li>
+                                    <li><span>cors.go</span> - 跨域处理</li>
+                                    <li><span>domain_check.go</span> - 域名白名单验证</li>
+                                    <li><span>forbid.go</span> - 请求路径拦截</li>
+                                    <li><span>gzip.go</span> - gzip 响应压缩</li>
+                                    <li><span>ip_blacklist.go</span> - 黑名单 IP 拦截</li>
+                                    <li><span>ip_limit.go</span> - 每 IP 并发限制</li>
+                                    <li><span>limit.go</span> - 全局并发限制</li>
+                                    <li><span>maintenance.go</span> - 全站维护模式</li>
+                                    <li><span>memory_guard.go</span> - 内存占用限制</li>
+                                    <li><span>recovery.go</span> - panic 捕获与错误页渲染</li>
+                                    <li><span>timeout.go</span> - 请求超时控制</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><span>static/</span>
+                        <ul>
+                            <li><span>index.html</span> - 首页或入口页</li>
+                            <li><span>doc/index.html</span> - 📘 开发文档主页面</li>
+                            <li><span>layui/</span> - 前端 UI 框架资源（Layui）</li>
+                        </ul>
+                    </li>
+                    <li><span>templates/</span>
+                        <ul>
+                            <li><span>error.html</span> - 通用错误页</li>
+                            <li><span>403.html / 404.html / 500.html 等</span> - 对应错误状态页</li>
+                        </ul>
+                    </li>
+                    <li><span>utils/</span>
+                        <ul>
+                            <li><span>error.page.go</span> - 错误页渲染工具</li>
+                            <li><span>json.go</span> - JSON 编解码处理</li>
+                            <li><span>response.go</span> - 统一 JSON 返回封装</li>
+                        </ul>
+                    </li>
+                    <li><span>config.yaml</span> - 主配置文件（支持热重载）</li>
+                    <li><span>go.mod / go.sum</span> - Go 项目依赖声明文件</li>
+                    <li><span>rsrc_windows_amd64.syso</span> - Windows 图标资源文件</li>
+                </ul>
+            </li>
+        </ul>
+
+        <blockquote class="layui-elem-quote">
+            ✅ 建议：保持目录结构清晰可维护，配置与代码逻辑严格分离。
+        </blockquote>
+    </div>
+</div>

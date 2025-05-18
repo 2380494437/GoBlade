@@ -1,0 +1,50 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>编译代码（生成可执行文件）</h2></div>
+    <div class="layui-card-body">
+
+        <fieldset class="layui-elem-field">
+            <legend>📦 Linux → Linux 编译</legend>
+            <div class="layui-field-box">
+                <pre>
+go build -o goblade main.go
+                </pre>
+                <p>生成 <code>goblade</code> 可执行文件，直接运行：</p>
+                <pre>./goblade</pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>💻 Windows → Windows 编译</legend>
+            <div class="layui-field-box">
+                <pre>
+go build -o goblade.exe main.go
+                </pre>
+                <p>双击或在 CMD 中运行 <code>goblade.exe</code></p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🐧 Windows → Linux 交叉编译</legend>
+            <div class="layui-field-box">
+                <pre>
+SET GOOS=linux
+SET GOARCH=amd64
+go build -o goblade main.go
+                </pre>
+                <p>⚠️ 编译结果 <strong>不能</strong>在 Windows 执行，应传至 Linux。</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>📌 常见问题</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li>未设置 GOOS/GOARCH？默认编译为当前平台</li>
+                    <li>提示权限 denied？请用 <code>chmod +x goblade</code> 授权</li>
+                    <li>编译后报错缺包？请先 <code>go mod tidy</code></li>
+                </ul>
+            </div>
+        </fieldset>
+
+    </div>
+</div>

@@ -1,0 +1,59 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>常见问题：修改 config.yaml 配置不生效？</h2></div>
+    <div class="layui-card-body">
+
+        <blockquote class="layui-elem-quote">
+            GoBlade 框架支持配置热重载，但⚠️并不是所有配置都能在运行时立即生效。
+        </blockquote>
+
+        <fieldset class="layui-elem-field">
+            <legend>✅ 支持热重载的配置项（无需重启）</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li><code>max_concurrent_requests</code>：全局并发限制</li>
+                    <li><code>max_body_size</code>：上传大小限制</li>
+                    <li><code>maintenance_mode</code>：维护模式开关</li>
+                    <li><code>ip_blacklist_file</code>：黑名单路径</li>
+                    <li><code>cors</code> 跨域配置</li>
+                    <li><code>forbidden_paths</code> / <code>dirs</code> / <code>suffixes</code></li>
+                    <li><code>allowed_hosts</code> 域名白名单</li>
+                    <li><code>mysql_enabled</code>：是否启用数据库,注意，数据库的修改操作会导致数据库连接池实时重置,一般不要改</li>
+                    <li><code>table_prefix</code>：表名前缀（影响自动建表）</li>
+                    <li><code>mysql</code> 下所有字段：host、port、user、password、dbname 等</li>
+                </ul>
+                <p>说明：这些配置由热加载模块定期轮询并刷新内存，无需重启。(此处未一一列举)</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field layui-field-danger">
+            <legend>❌ 修改后必须重启才能生效</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li><code>port</code>：监听端口</li>
+                    <li><code>bind_ip</code>：监听地址</li>
+                    <li><code>static_dir</code>：静态资源目录</li>
+                    <li><code>error_dir</code>：错误页模板目录</li>
+                    <li><code>default_document</code>：默认首页文档</li>
+                    
+                </ul>
+                <p>说明：这些配置会在程序初始化时加载，并不支持运行中热替换。</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🧪 判断配置是否生效的方法</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li>查看控制台日志是否输出“配置文件加载完成”</li>
+                    <li>可通过调用接口打印 <code>config.Config</code> 内容来验证</li>
+                    <li>重启程序后再观察端口变化、静态目录是否更新</li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <blockquote class="layui-elem-quote">
+            ✅ 建议：调试前先确认你改的是支持热重载的配置项，否则必须重启程序。
+        </blockquote>
+
+    </div>
+</div>

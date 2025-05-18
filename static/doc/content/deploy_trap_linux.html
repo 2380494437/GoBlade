@@ -1,0 +1,88 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>Linux 部署：常见坑合集</h2></div>
+    <div class="layui-card-body">
+
+        <blockquote class="layui-elem-quote">
+            以下是开发者在 Linux 部署 GoBlade 项目过程中最容易遇到的问题，建议部署前逐条排查。
+        </blockquote>
+
+        <fieldset class="layui-elem-field">
+            <legend>📁 1️⃣ 文件权限不足</legend>
+            <div class="layui-field-box">
+                <p><strong>现象：</strong> 模板无法渲染、静态资源无法加载、执行失败。</p>
+                <p><strong>解决：</strong></p>
+                <pre>chmod -R 755 ./templates ./static ./config</pre>
+                <p>确保当前执行用户对项目目录具有读/执行权限。</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>👤 2️⃣ 用户权限不一致</legend>
+            <div class="layui-field-box">
+                <p><strong>现象：</strong> sudo 启动正常，普通用户运行失败</p>
+                <p><strong>原因：</strong> 端口/目录权限仅 root 可访问</p>
+                <p><strong>建议：</strong></p>
+                <ul class="layui-text">
+                    <li>非 root 用户不要监听 80 端口</li>
+                    <li>统一使用一个用户（如 goblade）部署</li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🌍 3️⃣ 跨目录路径不生效</legend>
+            <div class="layui-field-box">
+                <p><strong>原因：</strong> 使用相对路径时，从错误的工作目录运行程序。</p>
+                <p><strong>建议：</strong></p>
+                <pre>cd /home/www/goblade/
+./goblade</pre>
+                <p>确保在项目根目录下启动。</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>📦 4️⃣ 没有安装依赖</legend>
+            <div class="layui-field-box">
+                <p><strong>错误：</strong> 找不到包 xxx</p>
+                <p><strong>解决：</strong></p>
+                <pre>go mod tidy</pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🌐 5️⃣ 无法访问（端口未开放）</legend>
+            <div class="layui-field-box">
+                <p><strong>原因：</strong> Linux 防火墙未开放对应端口</p>
+                <p><strong>解决：</strong></p>
+                <pre>
+# 开放端口
+sudo ufw allow 8080
+sudo firewall-cmd --add-port=8080/tcp --permanent
+sudo firewall-cmd --reload
+                </pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🧩 6️⃣ 使用 systemd 未指定路径</legend>
+            <div class="layui-field-box">
+                <p><strong>现象：</strong> systemctl 启动无效或找不到配置文件</p>
+                <p><strong>建议：</strong></p>
+                <pre>WorkingDirectory=/home/www/goblade</pre>
+                <p>确保 systemd 的服务单元中设置了正确的工作路径。</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🔁 7️⃣ 配置文件热重载失败</legend>
+            <div class="layui-field-box">
+                <p><strong>原因：</strong> 配置文件没有保存成功或没有权限</p>
+                <p><strong>建议：</strong> 使用 <code>vim</code> 或 <code>nano</code> 确认写入并保存成功</p>
+            </div>
+        </fieldset>
+
+        <blockquote class="layui-elem-quote">
+            ✅ 建议部署前检查用户、目录、依赖、监听端口、防火墙、systemd 统一配置。
+        </blockquote>
+    </div>
+</div>

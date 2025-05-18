@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>错误页面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            color: #333;
+        }
+        .error-container {
+            width: 90%;
+            max-width: 700px;
+            margin: 80px auto;
+            padding: 40px;
+            border: 1px solid #e6e6e6;
+            border-left: 6px solid #1E9FFF;
+            background-color: #fefefe;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        h1 {
+            font-size: 36px;
+            color: #ff5722;
+            margin-bottom: 20px;
+        }
+        h3 {
+            margin-top: 30px;
+            font-size: 18px;
+            color: #333;
+        }
+        p {
+            font-size: 16px;
+            color: #555;
+        }
+        pre {
+            background: #f8f8f8;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #c7254e;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 13px;
+            color: #999;
+            border-top: 1px dashed #ddd;
+            padding-top: 10px;
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 28px; }
+            p, pre { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1>发生错误</h1>
+        <p>系统无法处理您的请求，请稍后再试或联系管理员。</p>
+
+        {{ if .error }}
+        <h3>错误信息：</h3>
+        <pre>{{ .error }}</pre>
+        {{ end }}
+
+        {{ if .debug }}
+            {{ if .stack }}
+            <h3>堆栈信息：</h3>
+            <pre>{{ .stack }}</pre>
+            {{ end }}
+        {{ else }}
+        {{ end }}
+
+        <div class="footer">
+            本页面由 GoBlade 框架自动生成 | 若问题持续，请检查服务器日志。
+        </div>
+    </div>
+</body>
+</html>

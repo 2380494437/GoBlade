@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>GoBlade 项目开发文档</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <style>
+        body { padding: 30px; }
+        pre { background: #f8f8f8; padding: 10px; border: 1px solid #ddd; }
+        h2 { margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+<h1>GoBlade 后端项目开发文档</h1>
+<blockquote class="layui-elem-quote">
+    本项目基于 Gin 构建，结构清晰，适合中小型 Web 接口服务开发。支持多版本路由、自动建表、静态页面、安装引导等功能。
+</blockquote>
+
+<h2>📁 项目目录结构</h2>
+<pre>
+
+/go/
+├── main.go                   // 启动入口，初始化配置、路由、注册中间件
+├── config/                     // 配置模块
+│   ├── blacklist.txt             // IP黑名单文件
+│   ├── project_config.go         // 项目静态配置
+│   ├── loader.go                 // 加载 config.yaml，支持热重载
+│   └── db.go                     // 初始化数据库连接池（全局 DB 对象）
+├── controllers/              // 接口控制器模块（按版本划分）
+│   ├── v1/                     // v1 接口控制器逻辑
+│   │   └── install.go            // 安装逻辑、建表示例
+│   └── v2/                     // v2 接口控制器逻辑（可扩展）
+│       └── install.go
+├── routes/                   // 路由注册模块（按版本划分）
+│   ├── router.go               // 路由统一注册入口
+│   ├── v1/                     // v1 路由模块
+│   │   └── v1.go
+│   └── v2/                     // v2 路由模块
+│       └── v2.go
+├── middlewares/              // 中间件模块（如权限拦截）
+│   └── auth.go                 // 示例：自定义权限验证中间件,如果你的项目要接入权限验证，则开发这个模块
+│   └── core/                   // 框架中间件模块，一般不用动，属于框架自身的功能中间件
+│       ├── body_limet.go         // 上传文件大小拦截器
+│       ├── cors.go               // 跨域配置中间件
+│       ├── domain_check.go       // 域名白名单中间件
+│       ├── forbid.go             // 请求路径规则拦截器
+│       ├── gzip.go               // gzip压缩中间件
+│       ├── ip_blacklist.go       // 黑名单IP拦截器
+│       ├── ip_limit.go           // 单IP并发拦截器
+│       ├── limit.go              // 总并发拦截器
+│       ├── maintenance.go        // 全站维护中间件
+│       ├── memory_guard.go       // 内存限制器
+│       ├── recovery.go           // panic 捕获并渲染错误页
+│       └── timeout.go            // 请求超时控制器
+├── static/                  // 前端静态资源目录
+│   ├── index.html             // 首页（项目介绍）
+│   ├── doc/                   // 开发文档
+│   │   └── index.html           // ✅ 本开发文档页面
+│   └── layui/                 // 前端 Layui 框架资源
+├── templates/               // 模板页面目录
+│   ├── error.html             //默认错误页面
+│   ├── 413.html
+│   ├── 429.html
+│   ├── 503.html
+│   ├── 504.html
+│   ├── 521.html
+│   ├── 500.html               
+│   ├── 403.html
+│   └── 404.html              // 自定义 404 错误页
+├── utils/                    // 工具类目录
+│   ├── error.page.go           //错误页面输出模块
+│   ├── json.go                 //一个json转换模块
+│   └── response.go             // 统一的json返回模块，调用方法参考后面
+├── config.yaml               // 配置文件（整个项目的核心配置文件,支持热重载,变更后无需重启框架）
+├── go.mod                    // go项目文件
+├── go.sum                    // go项目文件
+└── rsrc_windows_amd64.syso   // go项目图标文件
+</pre>
+
+<h2>utils/response.go 调用方法</h2>
+<pre>
+//加载工具包"GoBlade/utils"
+
+import (
+	"github.com/gin-gonic/gin"
+	"GoBlade/utils"
+)
+// 成功
+utils.JSON(c, 200, "操作成功", gin.H{"id": 1})
+
+// 错误
+utils.JSON(c, 403, "禁止访问", nil)
+
+// 服务器异常
+utils.JSON(c, 500, "服务异常", nil)
+</pre>
+
+<h2>⚙ 配置说明（config.yaml）</h2>
+<ul class="layui-list layui-text">
+    <li><strong>port / bind_ip</strong>：服务监听地址和端口</li>
+    <li><strong>debug_mode</strong>：是否显示调试信息和错误堆栈</li>
+    <li><strong>static_dir</strong>：静态资源目录（相当于前端运行目录,此目录不要设置为根目录,不然会导致越权访问系统源码风险）</li>
+    <li><strong>default_document</strong>：目录访问默认页（如 index.html）</li>
+    <li><strong>mysql_enabled</strong>：是否启用数据库连接池</li>
+    <li><strong>forbidden_suffixes</strong>：拦截的敏感后缀，如 .env/.key</li>
+    <li><strong>forbidden_paths</strong>：拦截的路径，如 /config.yaml</li>
+    <li><strong>forbidden_dirs</strong>：拦截的目录，如 /.git /logs</li>
+</ul>
+<ul class="layui-list layui-text">
+    <li><strong>config/project_config.go</strong>：配置文件结构体配置映射,后续config.yaml增加配置,这里要同步修改</li>
+    <li><strong>config/db.go</strong>：初始化数据库连接池，项目启动时调用，全局共享</li>
+</ul>
+
+<h2>🧠 多版本路由支持</h2>
+<ul class="layui-list layui-text">
+    <li>系统支持多版本 API，例如：<code>/api/v1/install</code> 与 <code>/api/v2/install</code> 可共存</li>
+    <li>不同版本对应不同控制器目录（controllers/v1 与 controllers/v2）</li>
+    <li>便于接口升级和兼容旧版本，适合生产环境迭代</li>
+</ul>
+<h2>🛡 中间件机制</h2>
+<ul class="layui-list layui-text">
+    <li><strong>panic 恢复：</strong> 自动捕获 panic 并渲染 500 页面</li>
+    <li><strong>权限拦截：</strong> 可扩展自定义 token 验证中间件</li>
+    <li><strong>静态访问拦截：</strong> 支持后缀/目录/路径 统一配置</li>
+</ul>
+
+<h2>🛠 支持热重载的配置</h2>
+<ul class="layui-list layui-text">
+    <li>支持热重载 <code>config.yaml</code>，自动刷新内存配置</li>
+    <li>支持动态切换 <code>debug_mode</code> 控制堆栈是否显示</li>
+    <li>数据库连接参数变化时，自动重建连接池</li>
+</ul>
+<h2>🛠 数据库热重载说明</h2>
+<pre>
+// 在业务代码中通过以下方式获取热重载后的配置与数据库连接池：
+
+config.ConfigLock.RLock()
+cfg := config.Config    // 获取最新配置（线程安全）
+config.ConfigLock.RUnlock()
+
+db := config.DB         // 获取当前数据库连接池（可直接使用）
+</pre>
+
+<h2>🛠 可修改的核心文件</h2>
+<table class="layui-table">
+    <thead>
+        <tr><th>文件</th><th>作用</th><th>如何修改</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>main.go</td>
+            <td>程序启动入口</td>
+            <td>一般无需修改，仅用于初始化配置和启动服务</td>
+        </tr>
+        <tr>
+            <td>config/project_config.go</td>
+            <td>配置文件的参数字段映射</td>
+            <td>部署前必须根据实际情况调整</td>
+        </tr>
+        <tr>
+            <td>config/db.go</td>
+            <td>初始化数据库连接池</td>
+            <td>默认已配置好，若使用其他数据库可在此更改驱动</td>
+        </tr>
+        <tr>
+            <td>controllers/v1/install.go</td>
+            <td>v1 安装接口逻辑（自动建表 + 字段补全）</td>
+            <td>新增表结构时可在此定义字段</td>
+        </tr>
+        <tr>
+            <td>controllers/v2/install.go</td>
+            <td>v2 安装接口逻辑（新版本用例）</td>
+            <td>用于接口迭代或新业务逻辑分离</td>
+        </tr>
+        <tr>
+            <td>routes/router.go</td>
+            <td>统一注册所有版本的接口路由</td>
+            <td>一般无需改动，仅扩展版本入口时使用</td>
+        </tr>
+        <tr>
+            <td>routes/v1/v1.go</td>
+            <td>v1 路由模块注册</td>
+            <td>添加接口时在此处调用控制器并注册路径</td>
+        </tr>
+        <tr>
+            <td>routes/v2/v2.go</td>
+            <td>v2 路由模块注册</td>
+            <td>版本升级后在此定义新接口路径</td>
+        </tr>
+        <tr>
+            <td>middlewares/auth.go</td>
+            <td>权限验证中间件</td>
+            <td>开发者可自定义 token/角色/IP 校验逻辑</td>
+        </tr>
+        <tr>
+            <td>static/index.html</td>
+            <td>首页：项目介绍、优势展示、文档入口</td>
+            <td>可替换为团队项目页或业务入口</td>
+        </tr>
+        <tr>
+            <td>static/doc.html</td>
+            <td>开发者使用文档</td>
+            <td>部署规范、接口说明、结构说明等</td>
+        </tr>
+        <tr>
+            <td>templates/404.html</td>
+            <td>自定义 404 页面</td>
+            <td>未命中路由或静态资源时显示</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<h2>🚀 快速开发建议</h2>
+<ul class="layui-list layui-text">
+    <li>新增接口 ➜ 在对应版本的 <code>controllers/v1/</code> 或 <code>controllers/v2/</code> </li>
+    <li>创建控制器 ➜ 在 <code>routes/v1/</code> 或 <code>routes/v2/</code> 注册</li>
+    <li>新增数据库表结构 ➜ 修改 <code>install.go</code> 中的 <code>tableDefinitions</code> 结构</li>
+    <li>修改界面风格 ➜ 替换 <code>static/</code> 中的前端页面和样式文件</li>
+</ul>
+<h2>🚀 常用开发建议</h2>
+<ul class="layui-list layui-text">
+    <li>新增接口 ➜ 写控制器 ➜ 路由注册 ➜ 测试</li>
+    <li>新增表结构 ➜ 更新 install.go 的定义</li>
+    <li>访问根目录 ➜ 会自动加载 default_document</li>
+    <li>配置改动后无需重启，系统会自动热加载</li>
+</ul>
+<h2>📌 注意事项</h2>
+<ul class="layui-list layui-text">
+    <li>当前数据库配置写死在 Go 文件中，未来可拓展为配置文件或环境变量</li>
+    <li>默认所有表使用统一前缀，可在配置中设置 <code>TablePrefix</code></li>
+    <li>重复访问安装接口不会破坏原表结构，会自动补全缺失字段</li>
+</ul>
+
+<h2>🚀 部署与运行教程（零基础版）</h2>
+
+<blockquote class="layui-elem-quote">
+    本教程适合刚接触 Go 的开发者，按顺序操作即可完成环境部署、运行与上线。
+</blockquote>
+
+<h3>📦 第一步：安装 Go 环境</h3>
+<pre>
+sudo apt update
+sudo apt install golang-go -y
+</pre>
+
+<h3>📦 第二步：安装依赖模块</h3>
+<pre>
+# 安装 Gin 框架
+go get -u github.com/gin-gonic/gin
+
+# 指定版本（推荐）
+go get github.com/gin-gonic/gin@latest
+
+# 安装 MySQL 驱动
+go get -u github.com/go-sql-driver/mysql
+</pre>
+
+<h3>🧱 第三步：调试运行（开发模式）</h3>
+<pre>
+go run main.go
+</pre>
+
+<h3>⚙ 第四步：编译为可执行文件（部署用）</h3>
+<pre>
+GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o app
+</pre>
+
+<h3>🚀 第五步：运行可执行文件</h3>
+<pre>
+./app
+</pre>
+
+<h3>🛠 第六步：后台运行项目（上线模式）</h3>
+<pre>
+nohup ./app > app.log 2>&1 &     # 使用 & 符号后台运行
+
+screen -S GoBlade                  # 使用 screen 管理
+./app
+</pre>
+
+<h3>若需要重新构建go.sum文件</h3>
+<pre>
+go mod tidy
+</pre>
+
+<h3>🔍 查看当前运行中的项目</h3>
+<pre>
+ps -ef | grep app
+</pre>
+
+<h3>🛑 停止项目进程</h3>
+<pre>
+kill -9 进程号
+# 示例：
+kill -9 12345
+</pre>
+
+<h3>🔓 开放服务器端口（如在云服务器上）</h3>
+<pre>
+sudo ufw allow 8080
+sudo ufw reload
+</pre>
+
+<h3>✅ 项目访问说明</h3>
+<ul class="layui-list layui-text">
+    <li>默认监听端口：<code>8080</code>，可在 <code>config/project_config.go</code> 修改</li>
+    <li>访问首页（静态页面）：<code>http://你的IP:8080/</code></li>
+    <li>v1 安装接口地址：<code>/api/v1/install</code></li>
+    <li>v2 示例接口地址：<code>/api/v2/install</code></li>
+</ul>
+<h3>🔐 常见问题：宝塔上传导致权限冲突</h3>
+<blockquote class="layui-elem-quote">
+如果你是通过宝塔面板上传的项目代码，上传后的文件属主通常是 <code>www</code> 用户，而你在终端操作项目时使用的是 <code>ubuntu</code> 或 <code>root</code>，这将导致运行或编译 Go 程序时报错（例如：<code>permission denied</code>）。
+</blockquote>
+
+<h4>✅ 查看项目目录所属用户</h4>
+<pre>
+ls -l /www/wwwroot/go
+</pre>
+
+<h4>✅ 将目录权限修改为当前终端用户</h4>
+<pre>
+# 如果你当前终端登录的是 ubuntu 用户：
+sudo chown -R ubuntu:ubuntu /www/wwwroot/go
+
+# 如果是 root 用户：
+sudo chown -R root:root /www/wwwroot/go
+</pre>
+
+<h4>✅ 或者，切换为 www 用户运行项目</h4>
+<pre>
+sudo su www
+cd /www/wwwroot/go
+go run main.go
+</pre>
+
+<p class="layui-text" style="color:#888;">确保 <strong>文件所属用户</strong> 与 <strong>运行者身份</strong> 一致，避免执行或编译时的权限问题。</p>
+
+<hr>
+<p style="text-align: center; color: #999;">GoBlade 项目文档 | 配置热重载 | 路由中间件 | 版本 1.3</p>
+
+</body>
+</html>

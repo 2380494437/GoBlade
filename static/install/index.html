@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>系统安装说明</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<body style="padding: 30px;">
+
+    <fieldset class="layui-elem-field">
+        <legend>安装说明</legend>
+        <div class="layui-field-box">
+            <p style="padding-bottom: 10px;">请先打开如下文件，填写数据库配置信息：</p>
+            <pre style="background: #f8f8f8; padding: 10px; border: 1px solid #ddd;">/config/project_config.go</pre>
+
+            <p style="padding-top: 10px;">填写完成后，点击下方按钮即可完成数据库初始化。</p>
+
+            <form class="layui-form" id="installForm">
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="submitInstall">执行安装</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </fieldset>
+
+    <script src="/layui/layui.js"></script>
+    <script>
+        layui.use(['form', 'layer'], function(){
+            const form = layui.form;
+            const layer = layui.layer;
+
+            form.on('submit(submitInstall)', function(){
+                fetch('/api/v1/install', {
+                    method: 'POST'
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.code === 200) {
+                        layer.msg('安装成功');
+                    } else {
+                        layer.msg('安装失败：' + res.message);
+                    }
+                })
+                .catch(() => {
+                    layer.msg('请求失败');
+                });
+
+                return false;
+            });
+        });
+    </script>
+
+</body>
+</html>

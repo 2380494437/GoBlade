@@ -1,0 +1,79 @@
+<div class="layui-card">
+    <div class="layui-card-header"><h2>创建一个新接口</h2></div>
+    <div class="layui-card-body">
+
+        <blockquote class="layui-elem-quote">
+            本节将指导你从零创建一个自定义 API 接口，例如：<code>GET /api/v1/hello</code>。
+        </blockquote>
+
+        <fieldset class="layui-elem-field">
+            <legend>📁 第一步：创建控制器函数</legend>
+            <div class="layui-field-box">
+                <p>在 <code>/controllers/v1/</code> 目录下新建 <code>hello.go</code>：</p>
+                <pre>
+// controllers/v1/hello.go
+
+package v1
+
+import (
+    "github.com/gin-gonic/gin"
+    "GoBlade/utils"
+)
+
+func HelloHandler(c *gin.Context) {
+    utils.JSON(c, 200, "Hello from GoBlade", gin.H{
+        "method": c.Request.Method,
+        "path":   c.Request.URL.Path,
+    })
+}
+                </pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🧩 第二步：注册路由路径</legend>
+            <div class="layui-field-box">
+                <p>打开 <code>/routes/v1/v1.go</code>，添加路由绑定：</p>
+                <pre>
+r.GET("/hello", controllers.HelloHandler)
+                </pre>
+                <p>完整路径为：<code>/api/v1/hello</code></p>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>🚀 第三步：运行并访问接口</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li>运行项目：<code>go run main.go</code></li>
+                    <li>浏览器访问：<code>http://localhost:8080/api/v1/hello</code></li>
+                    <li>返回示例：</li>
+                </ul>
+                <pre>{
+    "code": 200,
+    "message": "Hello from GoBlade",
+    "data": {
+        "method": "GET",
+        "path": "/api/v1/hello"
+    }
+}</pre>
+            </div>
+        </fieldset>
+
+        <fieldset class="layui-elem-field">
+            <legend>📌 命名规范建议</legend>
+            <div class="layui-field-box">
+                <ul class="layui-text">
+                    <li>控制器函数命名：<code>XXXHandler</code>，如 <code>LoginHandler</code></li>
+                    <li>文件按模块分类：如 <code>user.go</code>、<code>article.go</code></li>
+                    <li>建议分版本放置：<code>controllers/v1/</code>、<code>controllers/v2/</code></li>
+                </ul>
+            </div>
+        </fieldset>
+
+        <blockquote class="layui-elem-quote">
+            ✅ 你现在已经可以创建任意接口。下一步：了解如何统一返回结构，请进入“返回 JSON 数据”页面。
+        </blockquote>
+
+    </div>
+</div>

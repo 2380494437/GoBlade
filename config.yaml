@@ -1,0 +1,149 @@
+# 项目名称，用于启动日志显示等
+project_name: "MyGoBlade"
+
+# 绑定监听的 IP 地址，0.0.0.0 表示监听所有网卡（公网/内网）
+bind_ip: "0.0.0.0"
+
+# 应用监听端口号（默认 8080）
+port: 8080
+
+# 是否开启调试模式（true 会显示详细日志和错误堆栈）
+debug_mode: false
+
+# 静态文件目录，前端资源所在路径，禁止将此目录设置为根目录,不然前端可能会越权访问到整个系统代码和配置，更改后需要重启生效
+static_dir: "./static"
+
+# 自定义错误页面存放目录（如 404.html、500.html），更改后需要重启生效
+error_dir: "./templates"
+
+# 默认首页文档名称（用于目录访问时自动加载）
+default_document: "index.html"
+
+# 黑名单IP文件
+ip_blacklist_file: "./config/blacklist.txt"
+
+
+# 同时处理请求上限，并发数限制，超过则返回429，减压、防爆、保护资源
+max_concurrent_requests: 500
+
+# 单IP最大并发数
+max_concurrent_per_ip: 15
+
+# 最大上传文件体积,单位字节，这里是20M
+max_body_size: 20971520  # 20MB
+
+# GoBlade框架的最大内存占用,超出这个内存占用后会拒绝处理新请求,单位MB
+max_memory_mb: 256
+
+# 请求最大处理时间（单位秒，超时将返回 504）
+request_timeout_seconds: 15
+
+# true 时启用维护模式，全站不可访问
+maintenance_mode: false  
+
+# 是否启用响应 Gzip 压缩，开启后500错误页面将不再显示
+gzip_enabled: false  
+
+
+
+cors:
+  enabled: false                 # 是否启用跨域
+  allow_origins: ["*"]           # 允许的源，可为 "*" 或指定域名
+  allow_methods: ["GET", "POST", "OPTIONS"] #允许前端跨域请求使用的 HTTP 方法（否则被浏览器拦截）
+  allow_headers: ["Origin", "Content-Type", "Authorization"] #允许前端请求时携带的 Header 字段（否则被浏览器拦截）
+  expose_headers: ["Content-Length"] #允许前端 JS 读取响应中的哪些 Header 字段
+  allow_credentials: true        # 是否允许携带 Cookie
+  max_age: 86400                 # 预检请求缓存时间（秒）
+
+
+# 拦截的文件后缀（防止用户访问敏感配置、密钥、源码等）
+forbidden_suffixes:
+  - ".env"
+  - ".git"
+  - ".key"
+  - ".pem"
+  - ".crt"           # 证书文件
+  - ".cert"
+  - ".conf"          # 配置文件
+  - ".yaml"
+  - ".yml"
+  - ".json"
+  - ".xml"
+  - ".sql"           # 数据备份文件
+  - ".log"           # 日志文件
+  - ".sh"            # shell 脚本
+  - ".bat"
+  - ".exe"
+  - ".py"
+  - ".php"
+  - ".go"
+  - ".zip"
+  - ".tar"
+  - ".gz"
+
+# 拦截的特定文件路径（从 URL 根路径匹配，敏感或系统文件）
+forbidden_paths:
+  - "/go.mod"
+  - "/go.sum"
+  - "/package.json"
+  - "/package-lock.json"
+  - "/config.yaml"
+  - "/config.yml"
+  - "/Dockerfile"
+  - "/Makefile"
+  - "/README.md"
+  - "/.env"
+
+# 拦截的目录（从 URL 根路径匹配，常见源码、备份、私密目录）
+forbidden_dirs:
+  - "/.git"
+  - "/.svn"
+  - "/.idea"
+  - "/vendor"
+  - "/node_modules"
+  - "/backup"
+  - "/secret"
+  - "/build"
+  - "/conf"
+  - "/config"
+  - "/logs"
+
+# 允许访问的域名白名单,将这些域名解析到服务器上,只有白名单域名才能访问
+allowed_hosts:
+  - goblade.example.com
+  - api.example.com
+  - 127.0.0.1
+  - 127.0.0.2
+
+
+# 是否启用 MySQL 数据库功能（false 表示完全禁用数据库）
+mysql_enabled: false
+
+# 数据表名前缀，如设置为 "goblade_"，则 user 表名为 "goblade_user"
+table_prefix: "goblade_"
+
+# MySQL 连接配置
+mysql:
+  # 数据库主机地址
+  host: "127.0.0.1"
+
+  # 数据库端口号（默认 3306）
+  port: "3306"
+
+  # 登录用户名
+  user: "zq123456"
+
+  # 登录密码
+  password: "a21f1b6e53"
+
+  # 数据库名称
+  dbname: "zq123456"
+
+  # 最大连接数（并发连接数上限）
+  max_open_conns: 100
+
+  # 最大空闲连接数（未使用连接保留数量）
+  max_idle_conns: 20
+
+  # 单个连接最大生命周期（单位：秒）
+  conn_max_lifetime: 3600
